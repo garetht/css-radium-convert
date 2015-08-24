@@ -1,7 +1,7 @@
 module.exports = {
   NODE_TYPES: {
     ROOT: 'root',
-    AT_RULE: 'at_rule',
+    AT_RULE: 'atrule',
     RULE: 'rule',
     DECLARATION: 'decl',
     COMMENT: 'comment'

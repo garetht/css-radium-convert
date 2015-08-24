@@ -2,7 +2,12 @@ var R = require('ramda'),
     camelcase = require('camelcase'),
     enums = require('./enums');
 
-var retrieve = type => R.filter(n => n.type === type),
+var retrieve = function() {
+      var args = Array.prototype.slice.call(arguments);
+      return R.filter(function(node) {
+        return R.contains(node.type, args);
+      });
+    },
     retrieveKeyValueDeclarations = function(node) {
       // Include more info about where this was declared
       // for more helpful debugging

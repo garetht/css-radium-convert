@@ -25,6 +25,7 @@
     "babel-runtime": "^5.8.20",
     "camelcase": "^1.2.1",
     "gulp-babel": "^5.2.1",
+    "gulp-watch": "^4.3.5",
     "postcss-selector-parser": "^1.1.4",
     "ramda": "^0.17.1",
     "seamless-immutable": "^3.0.0"
