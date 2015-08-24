@@ -1,6 +1,7 @@
 node_modules
-build
+build*
 *.iml
 .idea
 npm-debug.log
 example
+

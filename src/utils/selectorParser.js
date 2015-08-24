@@ -3,7 +3,7 @@
 
 var selectorParser = require('postcss-selector-parser');
 
-module.exports = function() {
+module.exports = function(selector) {
   var parsed;
   selectorParser(function(selectors) {
     parsed = selectors;

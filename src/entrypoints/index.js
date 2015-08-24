@@ -1,23 +1,28 @@
 var postcss = require('postcss'),
     R = require('ramda'),
     selectorParser = require('../utils/selectorParser'),
-    Immutable = require('seamless-immutable');
+    Immutable = require('seamless-immutable'),
+    camelcase = require('camelcase'),
+    enums = require('../utils/enums'),
 
-var nodes = postcss.parse(`
-  .something {
-    hello: 2;
-  }
+    nodeUtils = require('../utils/nodeUtils');
 
-  .something .otherthing {
-    hello: 3;
-  }
-`).toResult().root.nodes;
+var util = require('util');
+
+var orEmptyArray = R.defaultTo([]);
+
+var reduceRules = R.reduce(function(acc, next) {
+      var firstClassNodeRetriever = R.compose(R.head, nodeUtils.retrieve(enums.SELECTOR_TYPES.CLASS)),
+          firstClassNode = firstClassNodeRetriever(selectorParser(next.selector).nodes[0].nodes),
+          firstClassName = camelcase(firstClassNode.value);
+      return R.assoc(firstClassName,
+                     R.append(nodeUtils.retrieveParsedDeclarations(next.nodes),
+                              orEmptyArray(acc[firstClassName])),
+                     acc);
+    }, {});
 
 
-R.reduce(function(acc, next) {
-  console.log(next.selector)
-}, Immutable({}), R.filter(n => n.type === 'rule', nodes));
-
+module.exports = R.compose(reduceRules, nodeUtils.retrieve(enums.NODE_TYPES.RULE));
 
 // Basically: create a data structure with
 // Map<string, Array<Map<string, string>>>

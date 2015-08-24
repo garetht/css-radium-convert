@@ -1,15 +1,22 @@
 var gulp = require('gulp'),
-    tsap = require('./asset-pipeline/fileExtractor');
+    jsap = require('./asset-pipeline/fileExtractor'),
+    babel = require('gulp-babel');
 
-gulp.task('javascript', tsap({
+gulp.task('javascript', jsap({
   entrypointGlob: './src/entrypoints/*.js',
   destinationPath: './build'
 }));
 
-gulp.task('javascript-watch', tsap({
+gulp.task('javascript-watch', jsap({
   entrypointGlob: './src/entrypoints/*.js',
   destinationPath: './build',
   isWatchMode: true
 }));
+
+gulp.task('es5ificate', function() {
+  gulp.src(['./src/**/*.js'])
+    .pipe(babel())
+    .pipe(gulp.dest('build-es5'))
+});
 
 gulp.task('default', ['javascript']);
