@@ -8,9 +8,9 @@ var postcss = require('postcss'),
     nesting = require('../utils/nestingUtils'),
     nodeUtils = require('../utils/nodeUtils');
 
-var orEmptyArray = R.defaultTo([]);
+var orEmptyObject = R.defaultTo({});
 
-var reduceRules = R.reduce(function reducer(acc, next) {
+var extractRules = R.reduce(function reducer(acc, next) {
   if (next.type === enums.NODE_TYPES.AT_RULE) {
     return R.reduce(reducer, acc, next.nodes);
   }
@@ -29,8 +29,24 @@ var reduceRules = R.reduce(function reducer(acc, next) {
 
 }, []);
 
+var combineRules = R.reduce(function(acc, [nextKey, nextValue]) {
+  var reduced = R.reduce(function(acc, next) {
+    if (next.nesting) {
+      return R.assoc(next.nesting, next.properties, acc);
+    } else {
+      return R.merge(acc, next.properties);
+    }
+  }, {}, nextValue);
+  return R.assoc(nextKey, reduced, acc);
+}, {});
+
 module.exports = R.compose(
-  reduceRules, nodeUtils.retrieve(enums.NODE_TYPES.RULE, enums.NODE_TYPES.AT_RULE));
+  combineRules,
+  R.toPairs,
+  R.groupBy(rule => rule.selector),
+  extractRules,
+  nodeUtils.retrieve(enums.NODE_TYPES.RULE, enums.NODE_TYPES.AT_RULE)
+);
 
 // Basically: create a data structure with
 // Map<string, Array<Map<string, string>>>

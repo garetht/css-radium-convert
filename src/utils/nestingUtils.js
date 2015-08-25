@@ -19,6 +19,11 @@ module.exports = {
     if (pseudoSelector) {
       return pseudoSelector.value;
     }
-    return 'hello!';
+
+    if (parsedParent.type === enums.NODE_TYPES.AT_RULE) {
+      return `@${parsedParent.name} ${parsedParent.params}`;
+    }
+
+    return null;
   }
 };

@@ -24,9 +24,9 @@ gulp.task('es5ificate', function() {
 });
 
 gulp.task('es5ificate-example', function() {
-  watch('./example/**/*.js', function() {
-    gulp.src(['./example/**/*.js'])
-      .pipe(watch('./example/**/*.js'))
+  watch('./example/*.js', function() {
+    gulp.src(['./example/*.js'])
+      .pipe(watch('./example/*.js'))
       .pipe(babel())
       .pipe(gulp.dest('build-es5-example'))
   })
